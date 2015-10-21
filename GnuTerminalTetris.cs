@@ -3,12 +3,12 @@ using System.Timers;
 // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
-class MonoConsolelGame{
+class GnuTerminalTetris{
 
     // =====================================================================
     static Timer aTimer;
     static ConsoleKeyInfo CKI;
-    static MainWorld MW;
+    static TetrisClass Tetris;
     //static int worldUpdateSpeed = 1000/18;
 
     static bool DEBUG;
@@ -70,18 +70,18 @@ class MonoConsolelGame{
     private static void Updater(){
 
         // -----------------------------------------------------------------
-        int[] fieldSize = {90, 34};
+        int[] fieldSize = {40, 36}; // 38_x 34_y
         // -----------------------------------------------------------------
-        MW = new MainWorld(fieldSize);
-        MW.Init();
+        Tetris = new TetrisClass(fieldSize);
+        Tetris.Init();
 
         aTimer = new Timer();
         InitTimer();
         // -----------------------------------------------------------------
         while(true){
 
-            //CKI = Console.ReadKey();
-            if(!MW.isAlife){
+
+            if(Tetris.STOP_GAME){
                 aTimer.AutoReset = false;
                 aTimer.Enabled = false;
                 aTimer.Dispose();
@@ -91,7 +91,7 @@ class MonoConsolelGame{
             }else{
             
                 if(!DEBUG)
-                    MW.UpdateUserPos(Console.ReadKey().Key);
+                    Tetris.UpdateObjectPos(Console.ReadKey().Key);
             }
         }
         // -----------------------------------------------------------------
@@ -101,7 +101,7 @@ class MonoConsolelGame{
     private static void InitTimer(){
 
         // -----------------------------------------------------------------
-        aTimer = new System.Timers.Timer(MW.worldUpdateSpeed); 
+        aTimer = new System.Timers.Timer(Tetris.worldUpdateSpeed); 
         aTimer.Elapsed += UpdateWorldEvent;
         aTimer.AutoReset = true;
         aTimer.Enabled = true;
@@ -113,7 +113,7 @@ class MonoConsolelGame{
     private static void UpdateWorldEvent(Object source, ElapsedEventArgs e){
 
         // -----------------------------------------------------------------
-        if(!MW.isAlife){
+        if(Tetris.STOP_GAME){
             aTimer.AutoReset = false;
             aTimer.Enabled = false;
             aTimer.Dispose();
@@ -124,11 +124,11 @@ class MonoConsolelGame{
         }else{
 
             if(DEBUG){
-                MW.UpdateUserPos(Console.ReadKey().Key);
+                Tetris.UpdateObjectPos(Console.ReadKey(true).Key); // 'True' to dusable displaying pressed key
             }
             
-            MW.UpdateAllEntitys();
-            MW.RedrawWord();
+            Tetris.UpdateAllEntitys();
+            Tetris.RedrawWord();
 
         }
         // -----------------------------------------------------------------
