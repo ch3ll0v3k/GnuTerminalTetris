@@ -7,7 +7,7 @@ class GnuTerminalTetris{
 
     // =====================================================================
     static Timer aTimer;
-    static ConsoleKeyInfo CKI;
+    //static ConsoleKeyInfo CKI;
     static TetrisClass Tetris;
     //static int worldUpdateSpeed = 1000/18;
 
@@ -70,7 +70,7 @@ class GnuTerminalTetris{
     private static void Updater(){
 
         // -----------------------------------------------------------------
-        int[] fieldSize = {40, 36}; // 38_x 34_y
+        int[] fieldSize = {30, 24}; //{40, 24}; // 38_x 34_y
         // -----------------------------------------------------------------
         Tetris = new TetrisClass(fieldSize);
         Tetris.Init();
