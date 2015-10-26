@@ -70,7 +70,7 @@ class GnuTerminalTetris{
     private static void Updater(){
 
         // -----------------------------------------------------------------
-        int[] fieldSize = {30, 24}; //{40, 24}; // 38_x 34_y
+        int[] fieldSize = {20, 30}; //{40, 24}; // 38_x 34_y
         // -----------------------------------------------------------------
         Tetris = new TetrisClass(fieldSize);
         Tetris.Init();

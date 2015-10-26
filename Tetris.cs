@@ -17,8 +17,8 @@ public class TetrisClass{
     public string COL_SHR               = "|";
     public string FIELD_OFFSET          = "";
     public string EMPTY_CHR             = " ";
-    public string DINAMYC_OBJECT_CHR    = "#";
-    public string STATIC_OBJECT_CHR     = "$";
+    public string DINAMYC_OBJECT_CHR    = "$";
+    public string STATIC_OBJECT_CHR     = "#";
     public string NEW_ROW               = "";
     public string DRAWER                = "";
 
@@ -37,11 +37,11 @@ public class TetrisClass{
     // OPTIONS
     public bool PAUSED                  = false;
     public bool STOP_GAME               = false;
-    public int worldUpdateSpeed         = 1000/10;
+    public int worldUpdateSpeed         = 1000/8;
     public int[ , , ] ObjMatrix; 
     public ObjectsCreater _Object;
     //----------------------------------------
-    private float SPEED_DEVIDER_C       = 0.0F;
+    private float SPEED_DEVIDER_C       = 0.0F; //0.0F;
 
     private float SPEED_STEP            = 1.0F;
                   //SPEED_STEP            = 0.5F;
@@ -139,11 +139,6 @@ public class TetrisClass{
         Console.WriteLine(FIELD_OFFSET);
         Console.WriteLine(FIELD_OFFSET + COL_SHR + NEW_ROW + COL_SHR);
         // -----------------------------------------------------------------
-        //drawDinamycObj = false;
-        ///drawStaticObj = false;
-
-
-        // -----------------------------------------------------------------
         // FIELD MATRIX
         for(int Y=0; Y < fieldSizeY; Y++){
             DRAWER = "";
@@ -156,20 +151,23 @@ public class TetrisClass{
                 for(int _Y=0; _Y < OBJECT_MATRIX_H; _Y++){
                     if( !drawDinamycObj ){
                         for(int _X=0; _X < OBJECT_MATRIX_W; _X++){
-
                             // -----------------------------------------------
-                            if(ObjMatrix[_Y,_X, 0] != -1)
-                                MESSAGE = (ObjMatrix[_Y,_X, 0])+" : "+(ObjMatrix[_Y,_X, 1]);
+                            if(ObjMatrix[_Y,_X, 0] != -1) MESSAGE = (ObjMatrix[_Y,_X, 0])+" : "+(ObjMatrix[_Y,_X, 1]);
+                            // ---------------------------------------------
+                            if( ObjMatrix[_Y, _X, 1] >= fieldSizeY ){ createNewObject = true; }
+                            // ---------------------------------------------
+                            //if( (FIELD_MATRIX[ObjMatrix[_X,_Y, 0], ObjMatrix[_Y,_Y, 1]] == 1) ){ 
+                            if(ObjMatrix[_Y,_X, 0] != -1 && ObjMatrix[_Y,_X, 1] != -1){
+                                try{
+                                    if( FIELD_MATRIX[ ObjMatrix[_Y,_X, 0] , ObjMatrix[_Y,_X, 1] ] == 1 ){ 
+                                        //MESSAGE = ""+ ObjMatrix[_Y,_X, 0]+":"+ObjMatrix[_Y,_X, 1];
+                                        createNewObject = true; 
+                                    }
+                                }catch(Exception ex){}
+                            }
                             // -----------------------------------------------
                             if(ObjMatrix[_Y, _X, 0] == X && ObjMatrix[_Y, _X, 1] == Y){
-                                drawDinamycObj = true;
-                                break;
-                            }
-                            // ---------------------------------------------
-                            if(ObjMatrix[_Y, _X, 1] >= fieldSizeY){
-                                createNewObject = true;
-                                //MESSAGE = "COLLIDET";
-                                //return 1;
+                                drawDinamycObj = true; break;
                             }
                             // ---------------------------------------------
                         } // for 4
@@ -232,6 +230,7 @@ public class TetrisClass{
         //return 0;
         if(createNewObject){
 
+            // ------------------------------------------------------
             for(int y=0; y < OBJECT_MATRIX_H; y++){
                 for(int x=0; x < OBJECT_MATRIX_W; x++){
 
@@ -241,9 +240,31 @@ public class TetrisClass{
                     }
                 }
             }
+            // ------------------------------------------------------
+            // Remove full filled line if exists
+
+            // FIELD MATRIX
+            for(int X=0; X < fieldSizeX; X++){
+                
+                int sumator = 0;
+
+                for(int Y=0; Y < fieldSizeY; Y++){
+            
+                    sumator += FIELD_MATRIX[X, Y];
+
+                }
+                if(sumator >= fieldSizeX){
+                    // Delet this row
+                    for(int Y=0; Y < fieldSizeY; Y++){
+
+                        FIELD_MATRIX[X, Y] = 0;
+
+                    }
+                }
+            }
 
 
-
+            // ------------------------------------------------------
             createNewObject = false;
             NewObjectMatrix();
         }
